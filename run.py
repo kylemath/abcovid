@@ -2,6 +2,9 @@ import pandas as pd
 import plotly 
 import plotly.figure_factory as ff 
 from datetime import timedelta
+import matplotlib
+matplotlib.use('tkAgg')
+
 import matplotlib.pyplot as plt 
 
 
@@ -18,9 +21,12 @@ df['Finish'] = df['Start'] + timedelta(days=14)
 
 # fig.show()
 zones = ['Edmonton Zone', 'Calgary Zone', 'North Zone', 'Central Zone', 'South Zone']
+zones = ['Edmonton Zone', 'Calgary Zone', 'South Zone']
 
 for zone in zones: 
-	df[df['zone'] == zone].groupby('Start').count().confirmed.plot()
+	df_zone = df[df['zone'] == zone].groupby('Start').count().confirmed
+	df_zone.drop(df_zone.tail(1).index, inplace=True)
+	df_zone.plot()
 
 plt.legend(zones)
 plt.ylabel('New daily cases')
