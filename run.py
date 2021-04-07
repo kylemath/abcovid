@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 
 
 df = pd.read_csv('../downloads/covid19dataexport.csv',
-	names=['number', 'Start', 'zone', 'gender', 'age', 'Task', 'confirmed'], skiprows=1, parse_dates=['Start'])
-
-df['Finish'] = df['Start'] + timedelta(days=14)
+	names=['Start', 'zone', 'gender', 'age', 'Task', 'confirmed'], skiprows=1, parse_dates=['Start'])
+print(df)
+# df['Finish'] = df['Start'] + timedelta(days=14)
 
 # fig = ff.create_gantt(df.sort_values(by='Start', ascending='True'), bar_width=.3, height=6000, index_col='Task')
 
@@ -21,13 +21,32 @@ df['Finish'] = df['Start'] + timedelta(days=14)
 
 # fig.show()
 zones = ['Edmonton Zone', 'Calgary Zone', 'North Zone', 'Central Zone', 'South Zone']
-zones = ['Edmonton Zone', 'Calgary Zone', 'South Zone']
 
+
+print(df.head(1))
 for zone in zones: 
+	print(df['gender'] == 'Female')
 	df_zone = df[df['zone'] == zone].groupby('Start').count().confirmed
-	df_zone.drop(df_zone.tail(1).index, inplace=True)
+	# df_zone.drop(df_zone.tail(1).index, inplace=True)
 	df_zone.plot()
+
 
 plt.legend(zones)
 plt.ylabel('New daily cases')
+plt.show()
+
+
+
+populations = {'Edmonton Zone': 1424837, 'Calgary Zone': 1696765, 'North Zone': 484941, 'Central Zone': 482349, 'South Zone': 308924 }
+print(df.head(1))
+for zone in zones: 
+	print(df['gender'] == 'Female')
+	df_zone = df[df['zone'] == zone].groupby('Start').count().confirmed
+	# df_zone.drop(df_zone.tail(1).index, inplace=True)
+	df_zone = df_zone.divide(populations[zone]).multiply(1000)
+	df_zone.plot()
+
+
+plt.legend(zones)
+plt.ylabel('Cases per 100,000')
 plt.show()
