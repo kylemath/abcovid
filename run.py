@@ -8,8 +8,18 @@ matplotlib.use('tkAgg')
 import matplotlib.pyplot as plt 
 
 
-df = pd.read_csv('../downloads/covid19dataexport.csv',
-	names=['Start', 'zone', 'gender', 'age', 'Task', 'confirmed'], skiprows=1, parse_dates=['Start'])
+try:
+    from urllib.request import Request, urlopen  # Python 3
+except ImportError:
+    from urllib2 import Request, urlopen  # Python 2
+
+req = Request('https://www.alberta.ca/data/stats/covid-19-alberta-statistics-data.csv')
+req.add_header('User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0')
+content = urlopen(req)
+
+
+df = pd.read_csv(content,
+	names=['Rownum', 'Start', 'zone', 'gender', 'age', 'Task', 'confirmed'], skiprows=1, parse_dates=['Start'])
 print(df)
 # df['Finish'] = df['Start'] + timedelta(days=14)
 
